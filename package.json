@@ -1,0 +1,28 @@
+{
+  "name": "mock-private-registry",
+  "version": "1.0.0",
+  "description": "Mock of a private npm registry, useful for testing npm-related stuff",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test/**.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rexxars/mock-private-registry.git"
+  },
+  "keywords": [
+    "npm",
+    "registry",
+    "mock"
+  ],
+  "author": "Espen Hovlandsdal <espen@hovlandsdal.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rexxars/mock-private-registry/issues"
+  },
+  "homepage": "https://github.com/rexxars/mock-private-registry#readme",
+  "devDependencies": {
+    "got": "^6.3.0",
+    "tape": "^4.6.0"
+  }
+}
