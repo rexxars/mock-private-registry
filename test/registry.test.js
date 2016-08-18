@@ -2,6 +2,7 @@ var test = require('tape')
 var got = require('got')
 var crypto = require('crypto')
 var mock = require('../')
+var mockPromised = require('../promise')
 var responseTemplate = require('../responseTemplate.json')
 
 var token = 'MySecretToken'
@@ -94,3 +95,16 @@ test('returned tarball url is downloadable', function (t) {
 test('shutdown', function (t) {
   server.close(t.end)
 })
+
+test('has promise api', function (t) {
+  mockPromised().then(function (httpServer) {
+    req('/@mockscope%2Ffoobar', {json: true}).then(function (res) {
+      t.equal(res.body.name, '@mockscope/foobar')
+    }).catch(function (err) {
+      t.fail('Did not 200 as expected (' + err.message + ')')
+    }).then(function () {
+      httpServer.close(t.end)
+    })
+  })
+})
+

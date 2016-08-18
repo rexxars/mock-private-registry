@@ -5,7 +5,7 @@ var responseTemplate = require('./responseTemplate.json')
 
 var tarballPath = path.join(__dirname, 'mock.tgz')
 
-module.exports = function(opts, cb) {
+module.exports = function (opts, cb) {
   var callback = typeof opts === 'function' ? opts : cb
   var options = typeof opts === 'function' ? {} : opts
 
