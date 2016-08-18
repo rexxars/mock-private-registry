@@ -12,6 +12,7 @@ module.exports = function(opts, cb) {
   var hostname = options.hostname || '127.0.0.1'
   var port = options.port || 63142
   var token = options.token || 'MySecretToken'
+  var tokenType = options.tokenType || 'Bearer'
 
   var server = http.createServer(function (req, res) {
     if (req.method !== 'GET') {
@@ -22,7 +23,7 @@ module.exports = function(opts, cb) {
     }
 
     var authToken = (req.headers.authorization || '').split(' ', 2)
-    if (authToken[0] !== 'Bearer' || authToken[1] !== token) {
+    if (authToken[0] !== tokenType || authToken[1] !== token) {
       res.statusCode = 403
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify({error: 'Incorrect or missing token'}))
