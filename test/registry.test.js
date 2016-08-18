@@ -1,6 +1,7 @@
 var test = require('tape')
 var got = require('got')
 var crypto = require('crypto')
+var assign = require('object-assign')
 var mock = require('../')
 var mockPromised = require('../promise')
 var responseTemplate = require('../responseTemplate.json')
@@ -10,7 +11,7 @@ var defaultHeaders = {'Authorization': 'Bearer ' + token}
 var req = function (path, opts) {
   return got(
     /https?:\/\//.test(path) ? path : 'http://localhost:63142' + path,
-    Object.assign({timeout: 150, headers: defaultHeaders}, opts || {})
+    assign({timeout: 150, headers: defaultHeaders}, opts || {})
   )
 }
 

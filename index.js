@@ -1,6 +1,7 @@
 var fs = require('fs')
 var path = require('path')
 var http = require('http')
+var assign = require('object-assign')
 var responseTemplate = require('./responseTemplate.json')
 
 var tarballPath = path.join(__dirname, 'mock.tgz')
@@ -54,8 +55,8 @@ module.exports = function (opts, cb) {
 }
 
 function generatePackageResponse(hostname, port) {
-  var tpl = Object.assign({}, responseTemplate)
-  tpl.versions['1.0.0'].dist = Object.assign({}, tpl.versions['1.0.0'].dist, {
+  var tpl = assign({}, responseTemplate)
+  tpl.versions['1.0.0'].dist = assign({}, tpl.versions['1.0.0'].dist, {
     tarball: 'http://' + hostname + ':' + port + '/@mockscope/foobar/-/foobar-1.0.0.tgz'
   })
   return tpl

@@ -1,5 +1,7 @@
 # mock-private-registry
 
+[![npm version](http://img.shields.io/npm/v/mock-private-registry.svg?style=flat-square)](http://browsenpm.org/package/mock-private-registry)[![Build Status](http://img.shields.io/travis/rexxars/mock-private-registry/master.svg?style=flat-square)](https://travis-ci.org/rexxars/mock-private-registry)
+
 Mock of a private npm registry, useful for testing npm-related stuff
 
 ## Installation

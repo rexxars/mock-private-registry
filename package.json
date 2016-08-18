@@ -22,7 +22,10 @@
   },
   "homepage": "https://github.com/rexxars/mock-private-registry#readme",
   "devDependencies": {
-    "got": "^6.3.0",
+    "got": "^5.6.0",
     "tape": "^4.6.0"
+  },
+  "dependencies": {
+    "object-assign": "^4.1.0"
   }
 }
