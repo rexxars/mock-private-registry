@@ -109,3 +109,15 @@ test('has promise api', function (t) {
   })
 })
 
+test('can be configured to use alternative package name', function (t) {
+  mockPromised({pkgName: '@otherscope/some-module'}).then(function (httpServer) {
+    req('/@otherscope%2Fsome-module', {json: true}).then(function (res) {
+      t.equal(res.body.name, '@otherscope/some-module')
+    }).catch(function (err) {
+      t.fail('Did not 200 as expected (' + err.message + ')')
+    }).then(function () {
+      httpServer.close(t.end)
+    })
+  })
+})
+

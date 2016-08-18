@@ -43,10 +43,21 @@ Basically, call the module to spin up a server, and specify whatever you want to
 
 There is an alternative promise API available if you require `mock-private-registry/promise`. Usage is the same except there is no callback. Instead, the function will return a promise.
 
+## Options
+
+* `port` - Port number for the server. Default: `63142`
+* `hostname` - Hostname the server should listen on. Default: `127.0.0.1`
+* `token` - The token that valid requests should use. Default: `MySecretToken`
+* `tokenType` - Type of token. Usually `Bearer` or `Basic`. Default: `Bearer`
+* `pkgName` - Name of the package that should be available to query for. Default: `@mockscope/foobar`
+* `tarballPath` - Absolute path to a tarball you want to serve on the tarball endpoint. Default: `<mock-private-registry-path>/mock.tgz`
+
 ## Exposed endpoints
 
 * `/@mockscope%2Ffoobar` - Provides a mock registry response for the fictional `@mockscope/foobar` module.
 * `/@mockscope/foobar/-/foobar-1.0.0.tgz` - Provides a tarball of the fictional module.
+
+Note: If providing a different package name in the options, the above paths will reflect these.
 
 ## Why
 

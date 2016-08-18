@@ -1,15 +1,18 @@
 var fs = require('fs')
 var path = require('path')
 var http = require('http')
+var crypto = require('crypto')
 var assign = require('object-assign')
 var responseTemplate = require('./responseTemplate.json')
-
-var tarballPath = path.join(__dirname, 'mock.tgz')
 
 module.exports = function (opts, cb) {
   var callback = typeof opts === 'function' ? opts : cb
   var options = typeof opts === 'function' ? {} : opts
 
+  var pkgName = options.pkgName || '@mockscope/foobar'
+  var moduleName = pkgName.split('/', 2)[1]
+  var tarballPath = options.tarballPath || path.join(__dirname, 'mock.tgz')
+  var tarballShaSum = sha1(fs.readFileSync(tarballPath, {encoding: null}))
   var hostname = options.hostname || '127.0.0.1'
   var port = options.port || 63142
   var token = options.token || 'MySecretToken'
@@ -31,14 +34,14 @@ module.exports = function (opts, cb) {
       return
     }
 
-    if (req.url === '/@mockscope%2Ffoobar') {
+    if (req.url === '/' + softEncode(pkgName)) {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify(generatePackageResponse(hostname, port)))
+      res.end(JSON.stringify(generatePackageResponse()))
       return
     }
 
-    if (req.url === '/@mockscope/foobar/-/foobar-1.0.0.tgz') {
+    if (req.url === '/' + pkgName + '/-/' + moduleName + '-1.0.0.tgz') {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/octet-stream')
       fs.createReadStream(tarballPath).pipe(res)
@@ -52,12 +55,33 @@ module.exports = function (opts, cb) {
   server.listen(port, hostname, function () {
     callback(null, server)
   })
+
+  function generatePackageResponse() {
+    var tpl = assign({}, responseTemplate, {
+      _id: pkgName,
+      name: pkgName,
+    })
+
+    tpl.versions['1.0.0'] = assign({}, tpl.versions['1.0.0'], {
+      _id: pkgName + '@1.0.0',
+      name: pkgName,
+      dist: assign({}, tpl.versions['1.0.0'].dist, {
+        shasum: tarballShaSum,
+        tarball: [
+          'http://' + hostname + ':' + port,
+          pkgName, '-', moduleName + '-1.0.0.tgz'
+        ].join('/')
+      })
+    })
+
+    return tpl
+  }
 }
 
-function generatePackageResponse(hostname, port) {
-  var tpl = assign({}, responseTemplate)
-  tpl.versions['1.0.0'].dist = assign({}, tpl.versions['1.0.0'].dist, {
-    tarball: 'http://' + hostname + ':' + port + '/@mockscope/foobar/-/foobar-1.0.0.tgz'
-  })
-  return tpl
+function softEncode(pkg) {
+  return encodeURIComponent(pkg).replace(/^%40/, '@')
+}
+
+function sha1(data) {
+  return crypto.createHash('sha1').update(data).digest('hex')
 }
