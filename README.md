@@ -37,6 +37,10 @@ registry({port: 18888, token: token}, function (err, server) {
 
 Basically, call the module to spin up a server, and specify whatever you want to use as the valid authorization token. Second argument is a callback, which provides access to the server that is listening. This allows you to call `close()` on it when you're done.
 
+## Promise API
+
+There is an alternative promise API available if you require `mock-private-registry/promise`. Usage is the same except there is no callback. Instead, the function will return a promise.
+
 ## Exposed endpoints
 
 * `/@mockscope%2Ffoobar` - Provides a mock registry response for the fictional `@mockscope/foobar` module.
