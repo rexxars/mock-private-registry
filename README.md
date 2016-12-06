@@ -50,6 +50,7 @@ There is an alternative promise API available if you require `mock-private-regis
 * `token` - The token that valid requests should use. Default: `MySecretToken`
 * `tokenType` - Type of token. Usually `Bearer` or `Basic`. Default: `Bearer`
 * `pkgName` - Name of the package that should be available to query for. Default: `@mockscope/foobar`
+* `debug` - Boolean. Set to true in order to have the registry mock spit back whatever is not matching, for instance the expected vs received token. Default: `false`
 * `tarballPath` - Absolute path to a tarball you want to serve on the tarball endpoint. Default: `<mock-private-registry-path>/mock.tgz`
 
 ## Exposed endpoints

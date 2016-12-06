@@ -9,6 +9,7 @@ module.exports = function (opts, cb) {
   var callback = typeof opts === 'function' ? opts : cb
   var options = typeof opts === 'function' ? {} : opts
 
+  var debug = opts.debug || false
   var pkgName = options.pkgName || '@mockscope/foobar'
   var moduleName = pkgName.split('/', 2)[1]
   var tarballPath = options.tarballPath || path.join(__dirname, 'mock.tgz')
@@ -27,10 +28,17 @@ module.exports = function (opts, cb) {
     }
 
     var authToken = (req.headers.authorization || '').split(' ', 2)
-    if (authToken[0] !== tokenType || authToken[1] !== token) {
+    var correctTokenType = authToken[0] === tokenType
+    var correctToken = authToken[1] === token
+    if (!correctTokenType || !correctToken) {
       res.statusCode = 403
       res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({error: 'Incorrect or missing token'}))
+      var message = 'Incorrect or missing token'
+      if (debug) {
+        message += correctTokenType ? '' : '\nExpected token type "' + tokenType + '", got "' + authToken[0] + '"'
+        message += correctToken ? '' : '\nExpected token "' + token + '", got "' + authToken[1] + '"'
+      }
+      res.end(JSON.stringify({error: message}))
       return
     }
 
