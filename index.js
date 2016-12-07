@@ -27,13 +27,18 @@ module.exports = function (opts, cb) {
       return
     }
 
-    var authToken = (req.headers.authorization || '').split(' ', 2)
+    if (!req.headers.authorization) {
+      res.writeHead(403, 'Missing authorization header', {'Content-Type': 'application/json'})
+      res.end(JSON.stringify({error: 'Authorization header missing'}))
+      return
+    }
+
+    var authToken = req.headers.authorization.split(' ', 2)
     var correctTokenType = authToken[0] === tokenType
     var correctToken = authToken[1] === token
     if (!correctTokenType || !correctToken) {
-      res.statusCode = 403
-      res.setHeader('Content-Type', 'application/json')
-      var message = 'Incorrect or missing token'
+      var message = 'Incorrect token'
+      res.writeHead(403, message, {'Content-Type': 'application/json'})
       if (debug) {
         message += correctTokenType ? '' : '\nExpected token type "' + tokenType + '", got "' + authToken[0] + '"'
         message += correctToken ? '' : '\nExpected token "' + token + '", got "' + authToken[1] + '"'
@@ -42,7 +47,7 @@ module.exports = function (opts, cb) {
       return
     }
 
-    if (req.url === '/' + softEncode(pkgName)) {
+    if (ucEnc(req.url) === '/' + softEncode(pkgName)) {
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify(generatePackageResponse()))
@@ -92,4 +97,10 @@ function softEncode(pkg) {
 
 function sha1(data) {
   return crypto.createHash('sha1').update(data).digest('hex')
+}
+
+function ucEnc(str) {
+  return str.replace(/(%[a-f0-9]{2})/g, function (match) {
+    return match.toUpperCase()
+  })
 }
